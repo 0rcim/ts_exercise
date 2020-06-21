@@ -1,2 +1,2 @@
 # ts_exercise
- Few small ts examples...
+  Few small ts examples
