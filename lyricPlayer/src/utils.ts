@@ -2,7 +2,6 @@ import { LyricToken } from "../libs/lrc";
 
 export class LYRIC {
   tokens:LyricToken[] = [];
-  timers:object[] = [];
   
   parseLrc(src:string) : LyricToken[] {
     let source : string = /\[(\d+):(\d+)(.\d+)\]([\s\S]*?)$/.source;
@@ -17,14 +16,21 @@ export class LYRIC {
     })
   }
 
+  preLoadingItems(num) : LyricToken[] {
+    let introTime : number = this.tokens[0].start;
+    if (introTime < 300) return [];
+    let items : LyricToken[] = [];
+    for (let i=0; i<num; i++) items[i] = {start: introTime/(num)*i, words: `\x1b[100D\x1b[0K[Ready]${new Array(num).fill("○").fill("●", 0, i+1).join("")}`};
+    return items;
+  }
+
   play() : void {
-    process.stdout.write("ready...");
-    this.tokens.forEach((item, index) => {
-      this.timers[index] = setTimeout(() => {
+    this.tokens.concat(this.preLoadingItems(15)).forEach((item, index) => {
+      let timer = setTimeout(() => {
         // \x1b[100D 光标移动至行开头
         // \x1b[0K   清除行
         process.stdout.write(`\x1b[100D\x1b[0K[${index+1}/${this.tokens.length}] ${item.words}`);
-        clearTimeout(index);
+        clearTimeout(timer);
       }, item.start)
     });
   }
