@@ -29,8 +29,7 @@ export class Symbols implements Block {
   }
 }
 
-export function RenderText(txt:string) : string {
-  let symbols = new Symbols();
+export function RenderText(txt:string, symbols:Symbols) : string {
   let text_arr = txt.split("").map(s => symbols.query(s));
   let lines = [], i=0;
   while(i < 5) {
